@@ -892,8 +892,11 @@ const App = () => {
           </main>
 
           <footer className="mt-8 px-2 text-center text-[0.65rem] text-slate-500 sm:mt-12 sm:text-xs lg:mt-16">
-            Configura las URLs de los webhooks con las variables <code className="text-sky-300">VITE_RUBRIC_WEBHOOK_URL</code>{' '}
-            y <code className="text-sky-300">VITE_GRADING_WEBHOOK_URL</code> en un archivo <code className="text-slate-300">.env</code>.
+            Configura las URLs de los webhooks con las variables{' '}
+            <code className="text-sky-300">VITE_RUBRIC_WEBHOOK_URL</code>,{' '}
+            <code className="text-sky-300">VITE_GRADING_WEBHOOK_URL</code> y{' '}
+            <code className="text-sky-300">VITE_SPREADSHEET_WEBHOOK_URL</code> en un archivo{' '}
+            <code className="text-slate-300">.env</code>.
           </footer>
         </div>
       </div>
