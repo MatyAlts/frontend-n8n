@@ -1,1 +1,7 @@
 # frontend-n8n
+
+# requirments:
+
+Quiero crear un frontend para una herramienta app web universitaria, que me pida seleccionar un archivo PDF de un examen parcial, final, o trabajo practico, al subir ese pdf y clickear el boton de convertir a rubrica, debe enviar un webhook a n8n con ese PDF, luego n8n lo va a recibir, va a pasar por un proceso de conversion para enviarlo a gemini y crear una rubrica JSON, y luego ese mismo flujo va a responder al webhook con la respuesta del codigo JSON de la rubrica generada, el front debe recibir esa rubrica JSON y mostrarla en un apartado resultado donde va a estar la rubrica JSON, la misma app web debe tener esa funcionalidad de crear un nueva rubrica JSON desde un archivo pdf, o tambien la opcion de importar una rubrica JSON para corregir.
+
+Debajo debe estar el boton para importar un archivo a corregir, por ejemplo, python, java, word, pdf, etc, debe haber un boton corregir, que para pulsarlo debe ser obligatorio tener un archivo a corregir, ademas de utilizar una rubrica JSON, ya sea generada desde un pdf o importada desde archivo JSON, al clickear el boton corregir, debe enviar mediante otro webhook, los 2 archivos, la rubrica JSON utilizada, y el archivo a corregir, luego esa informacion va a ser corregida con un flujo de n8n, y el frontend debe esperar la respuesta del webhook donde se mostrara al usuario la nota final con todos los detalles de correccion
