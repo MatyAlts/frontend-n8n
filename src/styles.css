@@ -38,8 +38,16 @@ body {
 
 .code-scrollbar::-webkit-scrollbar,
 .result-scrollbar::-webkit-scrollbar {
-  width: 0.55rem;
-  height: 0.55rem;
+  width: 0.45rem;
+  height: 0.45rem;
+}
+
+@media (min-width: 640px) {
+  .code-scrollbar::-webkit-scrollbar,
+  .result-scrollbar::-webkit-scrollbar {
+    width: 0.55rem;
+    height: 0.55rem;
+  }
 }
 
 .code-scrollbar::-webkit-scrollbar-thumb,
@@ -51,4 +59,52 @@ body {
 .code-scrollbar::-webkit-scrollbar-track,
 .result-scrollbar::-webkit-scrollbar-track {
   background: rgba(15, 23, 42, 0.7);
+}
+
+/* Mejora la legibilidad del resultado de la corrección */
+.result-content {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  line-height: 1.7;
+  max-width: 100%;
+  display: block;
+}
+
+/* Asegura que el código pre no desborde horizontalmente */
+pre {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+/* Contenedores de código con scroll horizontal cuando sea necesario */
+.code-scrollbar,
+.result-scrollbar {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.code-scrollbar pre,
+.result-scrollbar pre {
+  margin: 0;
+  min-width: min-content;
+}
+
+/* Ajusta las animaciones en móviles para mejor rendimiento */
+@media (max-width: 639px) {
+  @media (prefers-reduced-motion: no-preference) {
+    .motion-safe\:animate-float {
+      animation: none;
+    }
+  }
+}
+
+/* Mejora el rendimiento en móviles */
+@media (max-width: 639px) {
+  * {
+    -webkit-tap-highlight-color: rgba(56, 189, 248, 0.3);
+  }
 }
