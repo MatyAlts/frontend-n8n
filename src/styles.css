@@ -160,7 +160,29 @@ button.primary {
   font-size: 0.95rem;
   line-height: 1.5;
   overflow-x: auto;
+  overflow-y: auto;
   max-height: 460px;
+  max-width: 100%;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.result-block {
+  margin: 0;
+  padding: 1.25rem;
+  border-radius: 1rem;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  color: #e2e8f0;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 600px;
+  max-width: 100%;
+  word-wrap: break-word;
+  white-space: pre-wrap;
 }
 
 .hint {

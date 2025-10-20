@@ -28,6 +28,25 @@ const downloadFile = (content: string, filename: string, mime: string) => {
   URL.revokeObjectURL(url);
 };
 
+const extractIframeContent = (text: string): string => {
+  // Buscar contenido dentro de iframe srcdoc
+  const iframeMatch = text.match(/<iframe[^>]*srcdoc=["']([^"']*)["'][^>]*>/i);
+  if (iframeMatch && iframeMatch[1]) {
+    // Extraer el contenido y procesar escapes HTML
+    let content = iframeMatch[1];
+    // Reemplazar escapes HTML comunes
+    content = content.replace(/&quot;/g, '"');
+    content = content.replace(/&lt;/g, '<');
+    content = content.replace(/&gt;/g, '>');
+    content = content.replace(/&amp;/g, '&');
+    // Convertir \n en saltos de línea reales
+    content = content.replace(/\\n/g, '\n');
+    return content;
+  }
+  // Si no hay iframe, convertir \n de todas formas
+  return text.replace(/\\n/g, '\n');
+};
+
 type RubricSource = 'generada' | 'importada' | null;
 
 type WebhookError = {
@@ -139,7 +158,9 @@ const App = () => {
       const formData = new FormData();
       formData.append('pdf', rubricPdf);
       const result = await sendWebhookRequest(rubricWebhookUrl, formData);
-      const printable = typeof result === 'string' ? result : formatJson(result);
+      // Procesar el resultado para extraer contenido de iframe si existe
+      const processedResult = typeof result === 'string' ? extractIframeContent(result) : result;
+      const printable = typeof processedResult === 'string' ? processedResult : formatJson(processedResult);
       setRubricJson(printable);
       setRubricSource('generada');
     } catch (error) {
@@ -180,7 +201,9 @@ const App = () => {
       formData.append('rubric', rubricBlob, 'rubrica.json');
       formData.append('submission', submissionFile);
       const result = await sendWebhookRequest(gradingWebhookUrl, formData);
-      setGradingResponse(result);
+      // Procesar el resultado para extraer contenido de iframe si existe
+      const processedResult = typeof result === 'string' ? extractIframeContent(result) : result;
+      setGradingResponse(processedResult);
     } catch (error) {
       const webhookError = error as WebhookError;
       setGradingError(webhookError);
@@ -292,7 +315,7 @@ const App = () => {
         <section className="card">
           <h2>Resultado de la corrección</h2>
           {gradingResponse ? (
-            <pre className="code-block">{formatJson(gradingResponse)}</pre>
+            <div className="result-block">{typeof gradingResponse === 'string' ? gradingResponse : formatJson(gradingResponse)}</div>
           ) : (
             <p className="hint">La respuesta del webhook de corrección aparecerá aquí.</p>
           )}
