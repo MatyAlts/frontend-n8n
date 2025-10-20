@@ -42,6 +42,54 @@ const extractIframeContent = (text: string): string => {
   return text.replace(/\\n/g, '\n');
 };
 
+type GradingSections = {
+  grade?: string;
+  summaryByCriteria?: string;
+  strengths?: string;
+  recommendations?: string;
+};
+
+const parseGradingSections = (result: unknown): GradingSections => {
+  if (typeof result !== 'string') {
+    return {};
+  }
+
+  const text = result.replace(/\r\n/g, '\n');
+
+  const gradeMatch = text.match(/Tu nota final es\s*([^\.\n]+)(?:\.|$)/i);
+  const grade = gradeMatch ? gradeMatch[1].trim() : undefined;
+
+  const extractSection = (marker: string, nextMarkers: string[]): string | undefined => {
+    const startIndex = text.indexOf(marker);
+    if (startIndex === -1) {
+      return undefined;
+    }
+
+    const afterMarker = text.slice(startIndex + marker.length);
+    const nextIndex = nextMarkers
+      .map((nextMarker) => afterMarker.indexOf(nextMarker))
+      .filter((index) => index !== -1)
+      .sort((a, b) => a - b)[0];
+
+    const section = nextIndex !== undefined ? afterMarker.slice(0, nextIndex) : afterMarker;
+    return section.trim();
+  };
+
+  const summaryByCriteria = extractSection('📌 Resumen por criterios', [
+    '💡 Fortalezas detectadas',
+    '🛠️ Recomendaciones',
+  ]);
+  const strengths = extractSection('💡 Fortalezas detectadas', ['🛠️ Recomendaciones']);
+  const recommendations = extractSection('🛠️ Recomendaciones', []);
+
+  return {
+    grade,
+    summaryByCriteria,
+    strengths,
+    recommendations,
+  };
+};
+
 type RubricSource = 'generada' | 'importada' | 'preestablecida' | null;
 
 type UniversityId = 'utn-frm' | 'utn-frsn' | 'utn-fra' | 'utn-frba';
@@ -332,6 +380,28 @@ const App = () => {
   useEffect(() => {
     setSelectedPresetRubricId('');
   }, [selectedCourse]);
+
+  useEffect(() => {
+    if (!gradingResponse) {
+      return;
+    }
+
+    const { grade, summaryByCriteria, strengths, recommendations } =
+      parseGradingSections(gradingResponse);
+
+    if (grade !== undefined) {
+      setSpreadsheetGrade(grade);
+    }
+    if (summaryByCriteria !== undefined) {
+      setSpreadsheetSummaryByCriteria(summaryByCriteria);
+    }
+    if (strengths !== undefined) {
+      setSpreadsheetStrengths(strengths);
+    }
+    if (recommendations !== undefined) {
+      setSpreadsheetRecommendations(recommendations);
+    }
+  }, [gradingResponse]);
 
   const handleRubricPdfChange = (event: ChangeEvent<HTMLInputElement>) => {
     const [file] = event.target.files ?? [];
