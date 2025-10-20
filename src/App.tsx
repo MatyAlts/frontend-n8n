@@ -93,7 +93,7 @@ const parseGradingSections = (result: unknown): GradingSections => {
 type RubricSource = 'generada' | 'importada' | 'preestablecida' | null;
 
 type UniversityId = 'utn-frm' | 'utn-frsn' | 'utn-fra' | 'utn-frba';
-type CourseId = 'programacion-1' | 'programacion-2' | 'programacion-3' | 'bases-de-datos-1';
+type CourseId = 'programacion-1' | 'programacion-2' | 'programacion-3' | 'bases-de-datos-1' | 'disenio-de-sistemas';
 
 type PresetRubric = {
   id: string;
@@ -115,6 +115,7 @@ const COURSES_BY_UNIVERSITY: Record<UniversityId, { id: CourseId; name: string }
     { id: 'programacion-2', name: 'Programación 2' },
     { id: 'programacion-3', name: 'Programación 3' },
     { id: 'bases-de-datos-1', name: 'Bases de Datos 1' },
+    { id: 'disenio-de-sistemas', name: 'Diseño de Sistemas' },
   ],
   'utn-frsn': [
     { id: 'programacion-1', name: 'Programación 1' },
@@ -312,6 +313,448 @@ const PRESET_RUBRICS: PresetRubric[] = [
       },
     },
   },
+  {
+    id: 'parcial-1-disenio-de-sistemas-pythonforestal',
+    name: 'Parcial PythonForestal',
+    courseId: 'disenio-de-sistemas',
+    content: {
+  "rubric_id": "evaluacion-tecnica-pythonforestal",
+  "title": "Rubrica de Evaluacion Tecnica - Sistema de Gestion Forestal",
+  "version": "1.0.0",
+  "assessment_type": "parcial",
+  "course": "Ingenieria de Software",
+  "language_or_stack": ["python"],
+  "submission": {
+    "single_file": false,
+    "accepted_extensions": [".py", ".md", ".dat"],
+    "delivery_channel": "repositorio",
+    "constraints": [
+      "Proyecto debe tener estructura de paquetes: entidades/, servicios/, patrones/, riego/, excepciones/",
+      "Debe incluir README.md, USER_STORIES.md y CLAUDE.md",
+      "Sistema debe ejecutarse exitosamente con 'python main.py'",
+      "Todos los paquetes deben contener archivos __init__.py"
+    ]
+  },
+  "grading": {
+    "policy": "sum",
+    "rounding": "half_up",
+    "total_points": 260
+  },
+  "criteria": [
+    {
+      "id": "C1",
+      "name": "Patrones de Diseño",
+      "weight": 0.3077,
+      "description": "Implementacion correcta de patrones Singleton, Factory Method, Observer y Strategy con sus caracteristicas especificas",
+      "subcriteria": [
+        {
+          "name": "Patron Singleton",
+          "weight": 0.25,
+          "evidence": [
+            "Atributo _instance de clase",
+            "Metodo __new__ con control de instancia unica",
+            "Thread-safety con threading.Lock y double-checked locking",
+            "Metodo get_instance() disponible",
+            "Inicializacion perezosa (lazy initialization)",
+            "Uso apropiado en CultivoServiceRegistry"
+          ]
+        },
+        {
+          "name": "Patron Factory Method",
+          "weight": 0.25,
+          "evidence": [
+            "Metodo estatico crear_cultivo(especie)",
+            "Retorna tipo base Cultivo, no tipos concretos",
+            "Diccionario de factories, sin if/elif cascades",
+            "Validacion con ValueError si especie desconocida",
+            "Uso en PlantacionService.plantar()"
+          ]
+        },
+        {
+          "name": "Patron Observer",
+          "weight": 0.25,
+          "evidence": [
+            "Clases Observable[T] y Observer[T] implementadas",
+            "Uso de TypeVar y Generic[T]",
+            "Metodo notificar_observadores() en sensores",
+            "Lista generica de observadores",
+            "TemperaturaReaderTask y ControlRiegoTask como Observable/Observer"
+          ]
+        },
+        {
+          "name": "Patron Strategy",
+          "weight": 0.25,
+          "evidence": [
+            "Interfaz abstracta AbsorcionAguaStrategy",
+            "Implementaciones: AbsorcionSeasonalStrategy, AbsorcionConstanteStrategy",
+            "Estrategia inyectada via constructor",
+            "Servicios delegan calculo a estrategia",
+            "Uso segun tipo de cultivo (arboles: seasonal, hortalizas: constante)"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C2",
+      "name": "Arquitectura y Diseño",
+      "weight": 0.2308,
+      "description": "Separacion de responsabilidades, jerarquia de clases, manejo de excepciones y organizacion del codigo",
+      "subcriteria": [
+        {
+          "name": "Separacion de Responsabilidades",
+          "weight": 0.3333,
+          "evidence": [
+            "Entidades solo datos en entidades/, servicios solo logica en servicios/",
+            "Capa de servicios bien definida con logica de negocio",
+            "Principio SRP: una clase = un concepto de dominio",
+            "Cohesion alta con modulos tematicos",
+            "Acoplamiento bajo con interfaces e inyeccion de dependencias"
+          ]
+        },
+        {
+          "name": "Jerarquia de Clases",
+          "weight": 0.25,
+          "evidence": [
+            "Herencia logica: CultivoService → ArbolService → servicios especificos",
+            "Codigo compartido en clases base (absorver_agua en CultivoService)",
+            "Polimorfismo: todos los cultivos son tipo Cultivo",
+            "Metodos abstractos en clases base"
+          ]
+        },
+        {
+          "name": "Manejo de Excepciones",
+          "weight": 0.25,
+          "evidence": [
+            "ForestacionException como base de jerarquia",
+            "Excepciones especificas: SuperficieInsuficienteException, AguaAgotadaException, PersistenciaException",
+            "Mensajes descriptivos con separacion user_message/technical_message",
+            "Validaciones lanzan excepciones apropiadas"
+          ]
+        },
+        {
+          "name": "Organizacion del Codigo",
+          "weight": 0.1667,
+          "evidence": [
+            "Paquetes: entidades, servicios, patrones, riego, excepciones",
+            "Modulos tematicos: cultivos/, terrenos/, personal/",
+            "Archivos __init__.py en todos los paquetes",
+            "Uso de TYPE_CHECKING para forward references"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C3",
+      "name": "Calidad de Codigo",
+      "weight": 0.2308,
+      "description": "Cumplimiento de PEP 8, documentacion, type hints y principios de codigo limpio",
+      "subcriteria": [
+        {
+          "name": "PEP 8 Compliance",
+          "weight": 0.3333,
+          "evidence": [
+            "Nombres snake_case descriptivos sin abreviaciones",
+            "Clases en PascalCase",
+            "Constantes UPPER_SNAKE_CASE en constantes.py",
+            "Imports organizados: Standard → Third-party → Local con secciones comentadas",
+            "Lineas max 100-120 caracteres",
+            "2 lineas entre clases, 1 entre metodos"
+          ]
+        },
+        {
+          "name": "Documentacion",
+          "weight": 0.25,
+          "evidence": [
+            "Docstrings en todas las clases publicas",
+            "Docstrings en metodos publicos con Google Style",
+            "Formato consistente: Args:, Returns:, Raises:",
+            "Comentarios en codigo complejo",
+            "README.md y USER_STORIES.md completos"
+          ]
+        },
+        {
+          "name": "Type Hints",
+          "weight": 0.1667,
+          "evidence": [
+            "Parametros y retornos tipados: def metodo(param: str) -> int:",
+            "Uso de TYPE_CHECKING para evitar imports circulares",
+            "Generics: TypeVar y Generic[T] en Observable[T], Paquete[T]"
+          ]
+        },
+        {
+          "name": "Principios de Codigo Limpio",
+          "weight": 0.25,
+          "evidence": [
+            "CERO magic numbers, todas en constantes.py",
+            "CERO lambdas, usar metodos estaticos nombrados",
+            "Funciones pequenas < 30 lineas",
+            "Nombres descriptivos autoexplicativos"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C4",
+      "name": "Funcionalidad del Sistema",
+      "weight": 0.1538,
+      "description": "Gestion de cultivos, sistema de riego automatizado, gestion de personal y persistencia",
+      "subcriteria": [
+        {
+          "name": "Gestion de Cultivos",
+          "weight": 0.30,
+          "evidence": [
+            "Al menos 4 tipos implementados: Pino, Olivo, Lechuga, Zanahoria",
+            "Sistema plantar() con validacion de superficie",
+            "Sistema regar() consume y distribuye agua"
+          ]
+        },
+        {
+          "name": "Sistema de Riego Automatizado",
+          "weight": 0.30,
+          "evidence": [
+            "Sensores temperatura y humedad en threads con lecturas periodicas",
+            "Control automatico evalua temp y humedad",
+            "Graceful shutdown con Event y timeout"
+          ]
+        },
+        {
+          "name": "Gestion de Personal",
+          "weight": 0.20,
+          "evidence": [
+            "Sistema asigna y ejecuta tareas con trabajar() funcional",
+            "Validacion de certificacion medica antes de trabajar"
+          ]
+        },
+        {
+          "name": "Persistencia",
+          "weight": 0.20,
+          "evidence": [
+            "persistir() crea archivo .dat",
+            "leer_registro() deserializa correctamente"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C5",
+      "name": "Buenas Practicas Avanzadas",
+      "weight": 0.0769,
+      "description": "Threading, concurrencia, validacion y robustez del sistema",
+      "subcriteria": [
+        {
+          "name": "Threading y Concurrencia",
+          "weight": 0.50,
+          "evidence": [
+            "Threads de fondo como daemon=True",
+            "Thread-safety: Lock en Singleton, Event en threads",
+            "Cierre apropiado con join() con timeout"
+          ]
+        },
+        {
+          "name": "Validacion y Robustez",
+          "weight": 0.50,
+          "evidence": [
+            "Parametros validados en setters: superficie > 0, agua >= 0",
+            "Defensive copying: get_cultivos() retorna copia",
+            "Try/except apropiados en persistencia con manejo de IOError"
+          ]
+        }
+      ]
+    }
+  ],
+  "global_descriptors": {
+    "Excelente": "234-260 puntos (90%+): Implementacion profesional de alta calidad con todos los patrones correctamente implementados, codigo limpio, bien documentado y arquitectura solida",
+    "Muy Bueno": "208-233 puntos (80-89%): Implementacion solida con practicas avanzadas, patrones bien aplicados y calidad de codigo consistente",
+    "Bueno": "182-207 puntos (70-79%): Implementacion correcta que cumple requisitos basicos, patrones funcionales con detalles menores a mejorar",
+    "Suficiente": "156-181 puntos (60-69%): Implementacion funcional con deficiencias en patrones, arquitectura o calidad de codigo",
+    "Insuficiente": "0-155 puntos (<60%): Requiere mejoras significativas en implementacion de patrones, arquitectura o funcionalidad"
+  },
+  "penalties": [
+    {
+      "description": "Magic numbers en codigo (no en constantes.py)",
+      "penalty_percent": 5
+    },
+    {
+      "description": "Uso de lambdas en lugar de funciones nombradas",
+      "penalty_percent": 3
+    },
+    {
+      "description": "Falta de docstrings en clases o metodos publicos",
+      "penalty_percent": 5
+    },
+    {
+      "description": "Imports circulares sin resolver con TYPE_CHECKING",
+      "penalty_percent": 3
+    },
+    {
+      "description": "Codigo muerto o comentado sin eliminar",
+      "penalty_percent": 2
+    },
+    {
+      "description": "Violaciones graves de PEP 8 (mas de 10 ocurrencias)",
+      "penalty_percent": 5
+    },
+    {
+      "description": "Sistema no ejecuta exitosamente con python main.py",
+      "penalty_percent": 20
+    }
+  ],
+  "mandatory_fail_conditions": [
+    {
+      "pattern": null,
+      "max_final_score": 0,
+      "reason": "Plagio detectado: codigo copiado de fuentes externas sin atribucion"
+    },
+    {
+      "pattern": null,
+      "max_final_score": 100,
+      "reason": "Ninguno de los cuatro patrones de diseño implementado correctamente (puntaje < 20 en Seccion 1)"
+    },
+    {
+      "pattern": null,
+      "max_final_score": 120,
+      "reason": "Sistema no ejecuta o presenta errores criticos que impiden su funcionamiento basico"
+    }
+  ],
+  "scoring_notes": [
+    "Usar los checklists detallados por patron para verificar implementacion completa",
+    "Buscar evidencia concreta en el codigo antes de asignar puntaje",
+    "Ser objetivo: si no esta implementado o visible en codigo, no puntuar",
+    "Documentar decisiones de puntaje en las notas del evaluador",
+    "Verificar que el sistema ejecute exitosamente antes de evaluar funcionalidad",
+    "Para cada patron, verificar tanto implementacion tecnica como uso apropiado en el sistema",
+    "En Seccion 3 (Calidad), usar herramientas automaticas si disponibles (pylint, flake8, mypy)",
+    "Priorizar funcionalidad sobre perfeccionismo: codigo funcional con detalles menores debe aprobar",
+    "El puntaje de aprobacion es 182 puntos (70%), el de excelencia es 234 puntos (90%)"
+  ],
+  "tasks": [
+    {
+      "label": "T1",
+      "prompt_excerpt": "Implementar patron SINGLETON con thread-safety para CultivoServiceRegistry",
+      "points": 20,
+      "links_to_criteria": ["C1"]
+    },
+    {
+      "label": "T2",
+      "prompt_excerpt": "Implementar patron FACTORY METHOD para creacion de cultivos con validacion",
+      "points": 20,
+      "links_to_criteria": ["C1"]
+    },
+    {
+      "label": "T3",
+      "prompt_excerpt": "Implementar patron OBSERVER con generics para sensores y control de riego",
+      "points": 20,
+      "links_to_criteria": ["C1"]
+    },
+    {
+      "label": "T4",
+      "prompt_excerpt": "Implementar patron STRATEGY para algoritmos de absorcion de agua",
+      "points": 20,
+      "links_to_criteria": ["C1"]
+    },
+    {
+      "label": "T5",
+      "prompt_excerpt": "Diseñar arquitectura con separacion de responsabilidades: entidades, servicios, patrones",
+      "points": 20,
+      "links_to_criteria": ["C2"]
+    },
+    {
+      "label": "T6",
+      "prompt_excerpt": "Implementar jerarquia de clases con herencia apropiada y polimorfismo",
+      "points": 15,
+      "links_to_criteria": ["C2"]
+    },
+    {
+      "label": "T7",
+      "prompt_excerpt": "Crear jerarquia de excepciones personalizadas del dominio",
+      "points": 15,
+      "links_to_criteria": ["C2"]
+    },
+    {
+      "label": "T8",
+      "prompt_excerpt": "Organizar codigo en paquetes tematicos con __init__.py",
+      "points": 10,
+      "links_to_criteria": ["C2"]
+    },
+    {
+      "label": "T9",
+      "prompt_excerpt": "Cumplir PEP 8: nombres, imports, formato, espaciado",
+      "points": 20,
+      "links_to_criteria": ["C3"]
+    },
+    {
+      "label": "T10",
+      "prompt_excerpt": "Documentar con docstrings Google Style en clases y metodos",
+      "points": 15,
+      "links_to_criteria": ["C3"]
+    },
+    {
+      "label": "T11",
+      "prompt_excerpt": "Agregar type hints completos usando TYPE_CHECKING y Generics",
+      "points": 10,
+      "links_to_criteria": ["C3"]
+    },
+    {
+      "label": "T12",
+      "prompt_excerpt": "Aplicar codigo limpio: sin magic numbers, sin lambdas, nombres descriptivos",
+      "points": 15,
+      "links_to_criteria": ["C3"]
+    },
+    {
+      "label": "T13",
+      "prompt_excerpt": "Implementar gestion de cultivos: multiples tipos, plantacion, riego",
+      "points": 12,
+      "links_to_criteria": ["C4"]
+    },
+    {
+      "label": "T14",
+      "prompt_excerpt": "Implementar sistema de riego automatizado con sensores en threads",
+      "points": 12,
+      "links_to_criteria": ["C4"]
+    },
+    {
+      "label": "T15",
+      "prompt_excerpt": "Implementar gestion de personal con validacion de apto medico",
+      "points": 8,
+      "links_to_criteria": ["C4"]
+    },
+    {
+      "label": "T16",
+      "prompt_excerpt": "Implementar persistencia: guardado y lectura de registros en .dat",
+      "points": 8,
+      "links_to_criteria": ["C4"]
+    },
+    {
+      "label": "T17",
+      "prompt_excerpt": "Implementar threading seguro: daemon threads, locks, graceful shutdown",
+      "points": 10,
+      "links_to_criteria": ["C5"]
+    },
+    {
+      "label": "T18",
+      "prompt_excerpt": "Validacion robusta: setters, defensive copying, manejo de errores",
+      "points": 10,
+      "links_to_criteria": ["C5"]
+    }
+  ],
+  "metadata": {
+    "institution": null,
+    "instructor": null,
+    "date": "2025-10",
+    "source_MD_title": "Rubrica de Evaluacion Tecnica - Sistema de Gestion Forestal",
+    "pages_parsed": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+    "notes": [
+      "Proyecto de referencia: PythonForestal v1.0.0",
+      "Rubrica incluye checklists detallados por patron de diseño",
+      "Rubrica incluye mapeo a Historias de Usuario (Epics 1-6)",
+      "Evaluacion tecnica aplicable tanto a contexto academico como profesional",
+      "Sistema de puntaje absoluto (260 puntos totales) en lugar de porcentajes",
+      "Incluye instrucciones detalladas para el evaluador",
+      "Criterios de objetividad: evidencia en codigo, no suponer, ser consistente"
+    ]
+  }
+}
+},
 ];
 
 type WebhookError = {
